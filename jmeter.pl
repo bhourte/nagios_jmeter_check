@@ -115,7 +115,8 @@ my $cmd = "java -server ".
 				" --propfile $propertiesFile".
 				" --testfile $planFile".
 #				" --homedir $jmeter_directory/bin".
-				" --logfile $resultsFile";
+				" --logfile $resultsFile".
+				" -Djmeter.save.saveservice.output_format=csv";
 
 use IPC::Open3;
 local (*HIS_IN, *HIS_OUT, *HIS_ERR);
