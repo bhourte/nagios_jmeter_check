@@ -131,7 +131,7 @@ my $childpid = open3(*HIS_IN, *HIS_OUT, *HIS_ERR, $cmd);
 # We will only run for so long.  Handle an alarm signal as a reason to kill the
 # spawned child process and exit.
 $SIG{'ALRM'} = sub {
-	print ("CRITICAL: Timeout $timeout expired.\n");
+	print ("CRITICAL: Timeout $timeout secs exceeded.\n");
 	if ($childpid) {
 		kill 1, $childpid;
 	}
@@ -196,15 +196,16 @@ if ($failure) {
 
 	if (defined($critTime) && ($critTime < $suminsecs)) {
 		$state = "CRITICAL";
-		$details = " (critical $critTime)";
+		$details = " (critical $critTime secs < $suminsecs secs)";
 	}elsif (defined($warnTime) && ($warnTime < $suminsecs)) {
 		$state = "WARNING";
-		$details = " (warning $warnTime)";
+		$details = " (warning $warnTime secs < $suminsecs secs < $critTime secs)";
 	} else {
 		$state = "OK";
+		$details = " (ok $suminsecs secs < $warnTime secs)";
 	}
 
-	print "$state : $details | sum_time=$suminsecs\n";
+	print "$state : $details | sum_time=$suminsecs;$warnTime;$critTime\n";
 
 }
 exit ($EXIT_STATUS{$state});
